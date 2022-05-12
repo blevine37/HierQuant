@@ -28,8 +28,12 @@ class CMatrix():
 
         self.type = type
 
-        # Make small blocks dense (smaller than the default SVD rank in SciPy)
-        if min(self.nr, self.nc) <= 6:
+        # Ranks
+        k_svd   = 6
+        k_dense = 2 * k_svd
+
+        # Make small blocks dense
+        if min(self.nr, self.nc) <= k_dense:
             self.type = 0
 
         #For the Hierarchical part, we use typ==0 to indicate the dense matrix condition
@@ -42,7 +46,7 @@ class CMatrix():
 
         
         elif self.type == 3:
-            u, s, vt = lg.svds(mat) # SVD rank is 6 by default
+            u, s, vt = lg.svds(mat, k = k_svd) # SVD rank is 6 by default
             self.u  = u
             self.s  = s
             self.vt = vt

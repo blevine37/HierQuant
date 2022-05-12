@@ -34,8 +34,12 @@ class CMatrix():
         # 2 - hierarchical
         self.type = randrange(3)
 
-        # Make small blocks dense (smaller than the default SVD rank in SciPy)
-        if min(self.nr, self.nc) <= 6:
+        # Ranks
+        k_svd   = 6
+        k_dense = 2 * k_svd
+
+        # Make small blocks dense
+        if min(self.nr, self.nc) <= k_dense:
             self.type = 0
 
         # Store the block as is if it is a dense type block
@@ -45,7 +49,7 @@ class CMatrix():
         # Or decompose it using any technique
         # Used SVD, because it was the easiest to implement
         elif self.type == 1:
-            u, s, vt = lg.svds(mat) # SVD rank is 6 by default
+            u, s, vt = lg.svds(mat, k = k_svd) # SVD rank is 6 by default
             self.u  = u
             self.s  = s
             self.vt = vt
